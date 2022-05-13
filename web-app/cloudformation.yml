@@ -104,7 +104,6 @@ Resources:
         - 
           AttributeName: "StartTime"
           KeyType: "RANGE"
-
       BillingMode: PAY_PER_REQUEST
 
     
