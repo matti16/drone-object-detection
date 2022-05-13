@@ -1,0 +1,110 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  AWS CloudFormation Template for Drone Object Detection project 
+
+Parameters:
+  Env:
+    Description: Environment (dev/prod)
+    Type: String
+    AllowedPattern: '[a-zA-Z0-9]*'
+    MinLength: '1'
+    MaxLength: '10'
+    ConstraintDescription: must contain only alphanumberic characters
+  ServiceName:
+    Description: Name of the project
+    Type: String
+  Account:
+    Type: Number
+    Description: "The AWS account ID"
+  Region:
+    Type: String
+    Description: "The AWS region"
+  ImageTag:
+    Type: String
+    Description: "The docker image tag to use"
+
+Resources:    
+  LambdaAPI:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub "${ServiceName}-lambda-${Env}"
+      Role: !GetAtt LambdaRole.Arn
+      PackageType: Image
+      Code:
+        ImageUri: !Sub "${Account}.dkr.ecr.${Region}.amazonaws.com/${ServiceName}:${ImageTag}"
+      ImageConfig:
+        Command: ["app.handler"]
+        EntryPoint: ["/lambda-entrypoint.sh"]
+        WorkingDirectory: "/var/task/"
+      Environment:
+        Variables:
+          S3_BUCKET: !Ref S3BucketData
+          DYNAMO_DB_TABLE: !Ref TripDBTable
+
+  LambdaRole:
+    Type: "AWS::IAM::Role"
+    Properties: 
+      RoleName: !Sub "${ServiceName}-role-${Env}"
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: "Allow"
+            Principal: 
+              Service: 
+                - "lambda.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !Sub "arn:aws:iam::${Account}:policy/${ServiceName}-lambda-policy-${Env}"
+  
+  LambdaEnpoint:
+    Type: AWS::Lambda::Url
+    Properties: 
+      AuthType: AWS_IAM
+      Cors: 
+        AllowMethods: "*"
+        AllowOrigins: "*"
+      Qualifier: !Sub ${ServiceName}-api-${Env}
+      TargetFunctionArn: !GetAtt LambdaAPI.Arn
+  
+  S3BucketData:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${ServiceName}-data-${Env}
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+  
+  TripDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${ServiceName}-trips-${Env}
+      AttributeDefinitions:
+        - 
+          AttributeName: "VehicleId"
+          AttributeType: "S"
+        - 
+          AttributeName: "TripId"
+          AttributeType: "S"
+        - 
+          AttributeName: "StartTime"
+          AttributeType: "S"
+        - 
+          AttributeName: "EndTime"
+          AttributeType: "S"
+        - 
+          AttributeName: "Steps"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "VehicleId"
+          KeyType: "HASH"
+        - 
+          AttributeName: "StartTime"
+          KeyType: "RANGE"
+
+      BillingMode: PAY_PER_REQUEST
+
+    

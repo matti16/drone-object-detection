@@ -1,0 +1,10 @@
+jupyter
+torch 
+torchvision
+opencv-contrib-python
+djitellopy
+tk
+pygame
+black 
+isort
+pydantic
