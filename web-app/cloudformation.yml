@@ -62,8 +62,8 @@ Resources:
     Properties: 
       AuthType: AWS_IAM
       Cors: 
-        AllowMethods: "*"
-        AllowOrigins: "*"
+        AllowMethods: ["*"]
+        AllowOrigins: ["*"]
       Qualifier: !Sub ${ServiceName}-api-${Env}
       TargetFunctionArn: !GetAtt LambdaAPI.Arn
   
