@@ -86,16 +86,7 @@ Resources:
           AttributeName: "VehicleId"
           AttributeType: "S"
         - 
-          AttributeName: "TripId"
-          AttributeType: "S"
-        - 
           AttributeName: "StartTime"
-          AttributeType: "S"
-        - 
-          AttributeName: "EndTime"
-          AttributeType: "S"
-        - 
-          AttributeName: "Steps"
           AttributeType: "S"
       KeySchema: 
         - 
