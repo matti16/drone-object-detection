@@ -1,4 +1,4 @@
-FROM 568480506324.dkr.ecr.eu-west-1.amazonaws.com/lambda/python:3.8
+FROM public.ecr.aws/lambda/python:3.8
 
 # Copy function code
 COPY src/ ${LAMBDA_TASK_ROOT}
