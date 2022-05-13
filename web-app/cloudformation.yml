@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  AWS CloudFormation Template for Drone Object Detection project 
+  AWS CloudFormation Template for Drone Object Detection project
 
 Parameters:
   Env:
