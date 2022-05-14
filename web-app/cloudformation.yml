@@ -50,7 +50,7 @@ Resources:
         Type: AWS_PROXY
         Uri: !Sub
           - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations
-          - lambdaArn: !GetAtt LambdaDispatcher.Arn
+          - lambdaArn: !GetAtt LambdaAPI.Arn
 
   ApiGatewayProxyMethodGet:
     Type: AWS::ApiGateway::Method
@@ -65,7 +65,7 @@ Resources:
         Type: AWS_PROXY
         Uri: !Sub
           - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations
-          - lambdaArn: !GetAtt LambdaDispatcher.Arn
+          - lambdaArn: !GetAtt LambdaAPI.Arn
   
   ApiGatewayProxyMethodOptions:
     Type: AWS::ApiGateway::Method
