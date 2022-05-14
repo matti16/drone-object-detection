@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 class Trip(BaseModel):
-    vechicle_id: str
+    vehicle_id: str
     trip_id: str
     start_time: datetime
     end_time: datetime
