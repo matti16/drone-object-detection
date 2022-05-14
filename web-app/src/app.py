@@ -44,8 +44,6 @@ def post_trip_img(
     ):
     s3_path = f"trips_images/{vehicle_id}/{trip_id}/{img.filename}"
     data = img.file._file
-    print(len(data))
-
     client = boto3.client('s3')
     client.put_object(Body=data, Bucket=S3_BUCKET, Key=s3_path)
 
