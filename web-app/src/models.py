@@ -9,3 +9,11 @@ class Trip(BaseModel):
     end_time: datetime
     target_class: str
     steps: list
+
+
+class TripImage(BaseModel):
+    data: str
+    filename: str
+    vehicle_id: str
+    trip_id: str
+
