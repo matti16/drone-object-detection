@@ -7,5 +7,5 @@ class Trip(BaseModel):
     trip_id: str
     start_time: datetime
     end_time: datetime
-    target_label: str
+    target_class: str
     steps: list

@@ -19,16 +19,17 @@ app.add_middleware(
     
 
 @app.post(f"{BASE_PATH}/trip")
-def post_trip(body: Trip):
+def post_trip(trip: Trip):
     dynamodb = boto3.client('dynamodb')
     dynamodb.put_item(
         TableName=DYNAMO_DB_TABLE, 
         Item={
-            'VehicleId': {'S': body.vechicle_id},
-            'TripId': {'S': body.vechicle_id},
-            'StartTime': {'S': body.start_time},
-            'EndTime': {'S': body.end_time},
-            'Steps': {'S': json.dumps(body.steps)},
+            'VehicleId': {'S': trip.vechicle_id},
+            'TripId': {'S': trip.vechicle_id},
+            'TargetClass': {'S': trip.target_class},
+            'StartTime': {'S': trip.start_time},
+            'EndTime': {'S': trip.end_time},
+            'Steps': {'S': json.dumps(trip.steps)},
         }
     )
 
