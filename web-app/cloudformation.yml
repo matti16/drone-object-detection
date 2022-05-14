@@ -13,9 +13,6 @@ Parameters:
   ServiceName:
     Description: Name of the project
     Type: String
-  Account:
-    Type: Number
-    Description: "The AWS account ID"
   Region:
     Type: String
     Description: "The AWS region"
@@ -23,7 +20,105 @@ Parameters:
     Type: String
     Description: "The docker image tag to use"
 
-Resources:    
+Resources:   
+  ApiGateway:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Description: API Gateway
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Name: !Sub "${ServiceName}-api-${Env}"
+
+  ApiGatewayProxyResource:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      RestApiId: !Ref ApiGateway
+      ParentId: !GetAtt ApiGateway.RootResourceId
+      PathPart: "{proxy+}"
+  
+  ApiGatewayProxyMethodPost:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      ApiKeyRequired: false
+      RestApiId: !Ref ApiGateway
+      ResourceId: !Ref ApiGatewayProxyResource
+      HttpMethod: POST
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: !Sub
+          - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations
+          - lambdaArn: !GetAtt LambdaDispatcher.Arn
+
+  ApiGatewayProxyMethodGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      ApiKeyRequired: false
+      RestApiId: !Ref ApiGateway
+      ResourceId: !Ref ApiGatewayProxyResource
+      HttpMethod: GET
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: !Sub
+          - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations
+          - lambdaArn: !GetAtt LambdaDispatcher.Arn
+  
+  ApiGatewayProxyMethodOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref ApiGateway
+      ResourceId: !Ref ApiGatewayProxyResource
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,POST,OPTIONS'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: 200
+        ResponseModels:
+          application/json: 'Empty'
+        ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: false
+            method.response.header.Access-Control-Allow-Methods: false
+            method.response.header.Access-Control-Allow-Origin: false
+  
+  ApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - ApiGatewayProxyMethodPost
+      - ApiGatewayProxyMethodGet
+      - ApiGatewayProxyMethodOptions
+    Properties:
+      RestApiId: !Ref ApiGateway
+      StageName: !Ref Env
+  
+  ApiGatewayAccount:
+    Type: 'AWS::ApiGateway::Account'
+    Properties:
+      CloudWatchRoleArn: "arn:aws:iam::{AWS::AccountId}:role/api-gateway-role"
+  
+  LambdaApiGatewayInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LambdaAPI.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/*/*
+
   LambdaAPI:
     Type: AWS::Lambda::Function
     Properties:
@@ -31,7 +126,7 @@ Resources:
       Role: !GetAtt LambdaRole.Arn
       PackageType: Image
       Code:
-        ImageUri: !Sub "${Account}.dkr.ecr.${Region}.amazonaws.com/${ServiceName}:${ImageTag}"
+        ImageUri: !Sub "${AWS::AccountId}.dkr.ecr.${Region}.amazonaws.com/${ServiceName}:${ImageTag}"
       ImageConfig:
         Command: ["app.handler"]
         EntryPoint: ["/lambda-entrypoint.sh"]
@@ -55,17 +150,7 @@ Resources:
             Action: 
               - "sts:AssumeRole"
       ManagedPolicyArns:
-        - !Sub "arn:aws:iam::${Account}:policy/${ServiceName}-lambda-policy-${Env}"
-  
-  LambdaEnpoint:
-    Type: AWS::Lambda::Url
-    Properties: 
-      AuthType: AWS_IAM
-      Cors: 
-        AllowMethods: ["*"]
-        AllowOrigins: ["*"]
-      Qualifier: !Sub ${ServiceName}-api-${Env}
-      TargetFunctionArn: !GetAtt LambdaAPI.Arn
+        - !Sub "arn:aws:iam::${AWS::AccountId}:policy/${ServiceName}-lambda-policy-${Env}"
   
   S3BucketData:
     Type: AWS::S3::Bucket
