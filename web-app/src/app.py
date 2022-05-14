@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from models import Trip
 import boto3
 import json
-from hashlib import sha256
 
 from config import BASE_PATH, DYNAMO_DB_TABLE, S3_BUCKET
 
@@ -45,11 +44,7 @@ async def post_trip_img(
     ):
     s3_path = f"trips_images/{vehicle_id}/{trip_id}/{img.filename}"
     contents = await img.read()
-
-    h = sha256()
-    h.update(contents)
-    aux = h.hexdigest()
-    print(aux)
+    print(len(contents))
 
     client = boto3.client('s3')
     client.put_object(Body=contents, Bucket=S3_BUCKET, Key=s3_path)
