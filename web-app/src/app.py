@@ -33,6 +33,8 @@ def post_trip(trip: Trip):
         }
     )
 
+    return {"vechile_id": str(trip.vechicle_id), "trip_id": str(trip.vechicle_id)}
+
 
 @app.post(f"{BASE_PATH}/trip_img")
 async def post_trip_img(
@@ -43,8 +45,8 @@ async def post_trip_img(
     s3_path = f"trips_images/{vehicle_id}/{trip_id}/{img.filename}"
     contents = await img.read() 
 
-    client = boto3.client('s3')
-    client.put_object(Body=contents, Bucket=S3_BUCKET, Key=s3_path)
+    s3 = boto3.client('s3')
+    s3.upload_fileobj(contents, S3_BUCKET, s3_path)
 
     return {"bucket": S3_BUCKET, "key": s3_path}
 
