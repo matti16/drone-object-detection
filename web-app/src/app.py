@@ -24,12 +24,12 @@ def post_trip(trip: Trip):
     dynamodb.put_item(
         TableName=DYNAMO_DB_TABLE, 
         Item={
-            'VehicleId': {'S': trip.vechicle_id},
-            'TripId': {'S': trip.vechicle_id},
-            'TargetClass': {'S': trip.target_class},
-            'StartTime': {'S': trip.start_time},
-            'EndTime': {'S': trip.end_time},
-            'Steps': {'S': json.dumps(trip.steps)},
+            'VehicleId': {'S': str(trip.vechicle_id)},
+            'TripId': {'S': str(trip.vechicle_id)},
+            'TargetClass': {'S': str(trip.target_class)},
+            'StartTime': {'S': str(trip.start_time)},
+            'EndTime': {'S': str(trip.end_time)},
+            'Steps': {'S': json.dumps(trip.steps, default=str)},
         }
     )
 
