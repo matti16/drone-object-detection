@@ -12,7 +12,6 @@ on:
 
 env:
   SERVICE_NAME: tia-drone-detection
-  AWS_ACCOUNT: 568480506324
   AWS_REGION: eu-west-1
   PYTHON_VERSION: 3.8
 
@@ -81,7 +80,6 @@ jobs:
           parameter-overrides: >-
             Env=dev,
             ServiceName=${{env.SERVICE_NAME}},
-            Account=${{env.AWS_ACCOUNT}},
             Region=${{env.AWS_REGION}},
             ImageTag=${{github.sha}}
 
