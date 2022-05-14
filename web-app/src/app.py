@@ -44,16 +44,9 @@ async def post_trip_img(
         trip_id: str = Form(...)
     ):
     s3_path = f"trips_images/{vehicle_id}/{trip_id}/{img.filename}"
-    tmp_dir = f"/tmp/trips_images/{vehicle_id}/{trip_id}"
-    os.makedirs(tmp_dir, exist_ok=True)
-    
-    content = await img.read()
-    with open(f"{tmp_dir}/{img.filename}", "wb+") as tmp_file:
-        tmp_file.write(content)
-
+    contents = await img.read()
     client = boto3.client('s3')
-    with open(f"{tmp_dir}/{img.filename}", "rb") as tmp_file:
-        client.upload_fileobj(tmp_file, S3_BUCKET, s3_path)
+    client.put_object(Body=contents, Bucket=S3_BUCKET, Key=s3_path)
 
     return {"bucket": S3_BUCKET, "key": s3_path}
 
