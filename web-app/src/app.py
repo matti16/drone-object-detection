@@ -47,8 +47,9 @@ async def post_trip_img(
     tmp_dir = f"/tmp/trips_images/{vehicle_id}/{trip_id}"
     os.makedirs(tmp_dir, exist_ok=True)
     
+    content = await img.read()
     with open(f"{tmp_dir}/{img.filename}", "wb+") as tmp_file:
-        tmp_file.write(img.read())
+        tmp_file.write(content)
 
     client = boto3.client('s3')
     with open(f"{tmp_dir}/{img.filename}", "rb") as tmp_file:
