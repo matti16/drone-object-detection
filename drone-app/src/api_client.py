@@ -1,9 +1,15 @@
 import requests
+from hashlib import sha256
 
 
 def upload_img(endpoint, json_data, img_path):
     filename = img_path.split("/")[-1]
     files = {'img': (filename, open(img_path, 'rb'))}
+
+    h = sha256()
+    h.update(open(img_path, 'rb').read())
+    aux = h.hexdigest()
+    print(aux)
 
     response = requests.post(
         endpoint,
