@@ -34,7 +34,7 @@ def post_trip(body: Trip):
 
 
 @app.post(f"{BASE_PATH}/trip_img")
-def post_trip_img(
+async def post_trip_img(
         img: UploadFile = File(...), 
         vehicle_id: str = Form(...), 
         trip_id: str = Form(...)

@@ -41,7 +41,7 @@ Resources:
     Type: AWS::ApiGateway::Method
     Properties:
       AuthorizationType: NONE
-      ApiKeyRequired: false
+      ApiKeyRequired: true
       RestApiId: !Ref ApiGateway
       ResourceId: !Ref ApiGatewayProxyResource
       HttpMethod: POST
@@ -56,7 +56,7 @@ Resources:
     Type: AWS::ApiGateway::Method
     Properties:
       AuthorizationType: NONE
-      ApiKeyRequired: false
+      ApiKeyRequired: true
       RestApiId: !Ref ApiGateway
       ResourceId: !Ref ApiGatewayProxyResource
       HttpMethod: GET

@@ -81,7 +81,8 @@ class Trip:
     def end_trip(self):
         self.end_time = datetime.datetime.utcnow()
         json_trip = {
-            "vechicle_id": self.vechicle_id,
+            "vechicle_id": str(self.vechicle_id),
+            "trip_id": str(self.trip_id),
             "target_class": self.target_class,
             "start_time": self.start_time,
             "end_time": self.end_time,
