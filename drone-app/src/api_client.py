@@ -3,7 +3,7 @@ import requests
 
 def upload_img(endpoint, json_data, img_path):
     filename = img_path.split("/")[-1]
-    files = {'img': (filename, open(img_path, 'rb'))}
+    files = {'img': (filename, open(img_path, 'rb'), "image/jpeg")}
 
     print(len(open(img_path, 'rb').read()))
 

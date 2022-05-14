@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from models import Trip
 import boto3
 import json
+from PIL import Image
+import io
 
 from config import BASE_PATH, DYNAMO_DB_TABLE, S3_BUCKET
 
@@ -44,9 +46,10 @@ def post_trip_img(
     ):
     s3_path = f"trips_images/{vehicle_id}/{trip_id}/{img.filename}"
     data = img.file._file
+    pil_image = Image.open(io.BytesIO(data))
+    print(pil_image)
     client = boto3.client('s3')
     client.put_object(Body=data, Bucket=S3_BUCKET, Key=s3_path)
-
     return {"bucket": S3_BUCKET, "key": s3_path}
 
 

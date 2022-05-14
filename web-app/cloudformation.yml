@@ -27,7 +27,7 @@ Resources:
       Description: API Gateway
       BinaryMediaTypes:
         - image~1png
-        - image~1jpg
+        - image~1jpeg
         - multipart~1form-data
       EndpointConfiguration:
         Types:
