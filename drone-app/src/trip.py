@@ -6,7 +6,7 @@ import os
 from pydantic import BaseModel
 
 
-IMG_FREQ = 5
+IMG_FREQ = 3
 
 
 class Step(BaseModel):

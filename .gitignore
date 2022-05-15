@@ -1,4 +1,4 @@
-drone-app/data_log/*
+drone-app/data/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
