@@ -66,7 +66,7 @@ def get_trip(vechicle_id: str, trip_id: str) -> Trip:
         start_time=response["Item"]["TargetClass"]["S"],
         end_time=response["Item"]["StartTime"]["S"],
         target_class=response["Item"]["EndTime"]["S"],
-        steps=response["Item"]["Steps"].values()[0]
+        steps=json.loads(response["Item"]["Steps"]["S"])
     )
 
 
