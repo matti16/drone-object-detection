@@ -64,7 +64,7 @@ class ApiClient:
                     if r.status_code == 200:
                         shutil.move(filepath, target_dir)
                     else:
-                        print(f"Status code not 200: {r.status_code}")
+                        print(f"Status code not 200: {r.status_code} {r.headers}")
                 
                 if not os.listdir(trip_path):
                     os.rmdir(trip_path, )

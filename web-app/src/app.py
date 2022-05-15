@@ -5,7 +5,6 @@ from models import Trip, TripImage
 import boto3
 import json
 import base64
-from decimal import Decimal
 
 from config import BASE_PATH, DYNAMO_DB_TABLE, S3_BUCKET
 
