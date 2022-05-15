@@ -33,7 +33,7 @@ def post_trip(trip: Trip):
             'Steps': {'S': json.dumps(trip.steps, default=str)},
         }
     )
-    return {"vehile_id": str(trip.vehicle_id), "trip_id": str(trip.vechicle_id)}
+    return {"vehile_id": str(trip.vehicle_id), "trip_id": str(trip.trip_id)}
 
 
 @app.post(f"{BASE_PATH}/trip_img")
