@@ -25,15 +25,15 @@ def post_trip(trip: Trip):
     dynamodb.put_item(
         TableName=DYNAMO_DB_TABLE, 
         Item={
-            'VehicleId': {'S': str(trip.vechicle_id)},
-            'TripId': {'S': str(trip.vechicle_id)},
+            'VehicleId': {'S': str(trip.vehicle_id)},
+            'TripId': {'S': str(trip.trip_id)},
             'TargetClass': {'S': str(trip.target_class)},
             'StartTime': {'S': str(trip.start_time)},
             'EndTime': {'S': str(trip.end_time)},
             'Steps': {'S': json.dumps(trip.steps, default=str)},
         }
     )
-    return {"vechile_id": str(trip.vechicle_id), "trip_id": str(trip.vechicle_id)}
+    return {"vehile_id": str(trip.vehicle_id), "trip_id": str(trip.vechicle_id)}
 
 
 @app.post(f"{BASE_PATH}/trip_img")

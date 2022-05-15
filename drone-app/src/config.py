@@ -3,6 +3,8 @@ import os
 
 
 VEHICLE_ID = 1
+BASE_API_URL = "https://rggnnhjz9k.execute-api.eu-west-1.amazonaws.com/dev/api"
+API_TOKEN = os.getenv("API_TOKEN")
 
 # Flight Controller
 TARGET_SIZE_PERC = 0.7
@@ -19,8 +21,6 @@ RED = "#FFB3BA"
 GREEN = "#BAFFC9"
 YELLOW = "#FFFFBA"
 BLUE = "#BAE1FF"
-
-APP_MUSIC = "the_imperial_march.mp3"
 
 # Object Detection
 THRESHOLD = 0.6
@@ -133,7 +133,8 @@ def get_resources_path():
 
 
 RESOURCES_PATH = get_resources_path()
-DATA_LOG_PATH = os.path.join(get_base_path(), "data_log")
+DATA_LOG_PATH = os.path.join(get_base_path(), "data", "logged")
+DATA_UPLOADED_PATH = os.path.join(get_base_path(), "data", "uploaded")
 
 
 def get_asset_path(name):

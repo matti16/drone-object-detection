@@ -1,6 +1,5 @@
 from tkinter import *
 from PIL import ImageTk, Image
-from black import target_version_option_callback
 import cv2
 from config import *
 from controller import FlightController, Velocities
@@ -8,7 +7,7 @@ from trip import Trip
 
 class Application(Frame):
 
-    def __init__(self, master, detector, video, controller: FlightController, tracker):
+    def __init__(self, master, detector, video, controller: FlightController, tracker, api_client):
         super(Application, self).__init__(master, background=BLACK)
         self.grid()
 
@@ -16,6 +15,7 @@ class Application(Frame):
         self.video = video
         self.controller = controller
         self.tracker = tracker
+        self.api_client = api_client
         self.target_id = None
         self.target_class = None
         self.trip = None
