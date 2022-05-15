@@ -3,7 +3,7 @@ import os
 
 
 VEHICLE_ID = 1
-BASE_API_URL = "https://rggnnhjz9k.execute-api.eu-west-1.amazonaws.com/dev/api"
+BASE_API_URL = "https://xhpneti85g.execute-api.eu-west-1.amazonaws.com/dev/api"
 API_TOKEN = os.getenv("API_TOKEN")
 
 # Flight Controller
