@@ -31,7 +31,7 @@ def post_trip(trip: Trip):
             'TargetClass': {'S': str(trip.target_class)},
             'StartTime': {'S': str(trip.start_time)},
             'EndTime': {'S': str(trip.end_time)},
-            'Steps': json.dumps(trip.steps, default=str)
+            'Steps': {'S': json.dumps(trip.steps, default=str)},
         }
     )
     return {"vehile_id": str(trip.vehicle_id), "trip_id": str(trip.trip_id)}
