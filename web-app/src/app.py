@@ -32,7 +32,7 @@ def post_trip(trip: Trip):
             'StartTime': {'S': str(trip.start_time)},
             'EndTime': {'S': str(trip.end_time)},
             'Steps': {'L': 
-                {'M':s for s in json.loads(json.dumps(trip.steps, default=str), parse_float=Decimal)}
+                [{'M':s} for s in json.loads(json.dumps(trip.steps, default=str), parse_float=Decimal)]
             },
         }
     )
