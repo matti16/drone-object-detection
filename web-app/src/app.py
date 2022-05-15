@@ -5,6 +5,7 @@ from models import Trip, TripImage
 import boto3
 import json
 import base64
+from decimal import Decimal
 
 from config import BASE_PATH, DYNAMO_DB_TABLE, S3_BUCKET
 
@@ -30,7 +31,7 @@ def post_trip(trip: Trip):
             'TargetClass': {'S': str(trip.target_class)},
             'StartTime': {'S': str(trip.start_time)},
             'EndTime': {'S': str(trip.end_time)},
-            'Steps': {'S': json.dumps(trip.steps, default=str)},
+            'Steps': json.loads(json.dumps(trip.steps, default=str), parse_float=Decimal),
         }
     )
     return {"vehile_id": str(trip.vehicle_id), "trip_id": str(trip.trip_id)}
@@ -43,6 +44,30 @@ async def post_trip_img(trip_img: TripImage):
     client = boto3.client('s3')
     client.put_object(Body=data, Bucket=S3_BUCKET, Key=s3_path)
     return {"bucket": S3_BUCKET, "key": s3_path}
+
+@app.get(BASE_PATH + "/trip/{vechicle_id}/{trip_id}")
+def get_trip(vechicle_id: str, trip_id: str) -> Trip:
+    dynamodb = boto3.client('dynamodb')
+    response = dynamodb.get_item(
+        Key={
+            'VehicleId': {
+                'S': vechicle_id,
+            },
+            'TripId': {
+                'S': trip_id,
+            },
+        },
+        TableName=DYNAMO_DB_TABLE,
+    )
+    print(response)
+    return Trip(
+        vehicle_id=response["Item"]["VehicleId"]["S"],
+        trip_id=response["Item"]["TripId"]["S"],
+        start_time=response["Item"]["TargetClass"]["S"],
+        end_time=response["Item"]["StartTime"]["S"],
+        target_class=response["Item"]["EndTime"]["S"],
+        steps=response["Item"]["Steps"].values()[0]
+    )
 
 
 handler = Mangum(app)

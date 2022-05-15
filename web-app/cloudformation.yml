@@ -170,14 +170,14 @@ Resources:
           AttributeName: "VehicleId"
           AttributeType: "S"
         - 
-          AttributeName: "StartTime"
+          AttributeName: "TripId"
           AttributeType: "S"
       KeySchema: 
         - 
           AttributeName: "VehicleId"
           KeyType: "HASH"
         - 
-          AttributeName: "StartTime"
+          AttributeName: "TripId"
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
 
