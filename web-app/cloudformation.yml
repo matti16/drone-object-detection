@@ -25,10 +25,7 @@ Resources:
     Type: AWS::ApiGateway::RestApi
     Properties:
       Description: API Gateway
-      BinaryMediaTypes:
-        - image~1png
-        - image~1jpeg
-        - multipart~1form-data
+      ApiKeySourceType: HEADER
       EndpointConfiguration:
         Types:
           - REGIONAL
