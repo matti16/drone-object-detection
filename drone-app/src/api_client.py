@@ -27,7 +27,7 @@ class ApiClient:
             encoded_string = base64.b64encode(image_file.read())
             img_data = encoded_string.decode('utf-8')
 
-        filename = img_path.split("/")[-1]
+        filename = img_path.split(os.sep)[-1]
         payload = {
             "vehicle_id": vechicle_id,
             "trip_id": trip_id,

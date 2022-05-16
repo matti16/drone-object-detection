@@ -20,7 +20,7 @@ def main():
     window.title("Tello Drone")
     window.geometry("1600x850") 
     window.configure(background=BLACK)
-    app = Application(window, detector, video, controller, tracker, api_client)
+    app = Application(window, detector, video, controller, tracker)
     app.mainloop()
 
 
