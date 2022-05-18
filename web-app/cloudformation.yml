@@ -202,9 +202,9 @@ Resources:
             Resource: !Join 
               - ''
               - - 'arn:aws:s3:::'
-                - !Ref S3Bucket
+                - !Ref StaticWebSiteS3Bucket
                 - /*
-      Bucket: !Ref S3Bucket
+      Bucket: !Ref StaticWebSiteS3Bucket
 
   CloudFrontOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
@@ -253,7 +253,7 @@ Outputs:
 
   StaticS3WebsiteURL:
     Value: !GetAtt
-      - S3Bucket
+      - StaticWebSiteS3Bucket
       - WebsiteURL
   
   DnsEndpoint:
