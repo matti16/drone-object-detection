@@ -179,7 +179,85 @@ Resources:
       BillingMode: PAY_PER_REQUEST
 
 
+  StaticWebSiteS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${ServiceName}-web-${Env}
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: 
+              CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+            Action: "s3:GetObject"
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref S3Bucket
+                - /*
+      Bucket: !Ref S3Bucket
+
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub ${ServiceName} ${Env} cloudfront OAI
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+        - DomainName: !Sub "${ServiceName}-web-${Env}.s3.amazonaws.com"
+          Id: S3Origin 
+          S3OriginConfig:
+            OriginAccessIdentity: !Join [ '/', [ 'origin-access-identity', 'cloudfront', !Ref  CloudFrontOriginAccessIdentity] ]
+        Enabled: 'true'
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          AllowedMethods:
+          - DELETE
+          - GET
+          - HEAD
+          - OPTIONS
+          - PATCH
+          - POST
+          - PUT
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          ForwardedValues:
+            QueryString: 'false'
+            Cookies:
+              Forward: none
+        PriceClass: PriceClass_100
+        Restrictions:
+          GeoRestriction:
+            RestrictionType: whitelist
+            Locations:
+            - IT
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
+
 Outputs:
   ApiGatewayInvokeURL:
     Value: !Sub https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${Env}
+
+  StaticS3WebsiteURL:
+    Value: !GetAtt
+      - S3Bucket
+      - WebsiteURL
+  
+  DnsEndpoint:
+    Value: !GetAtt CloudFrontDistribution.DomainName
+  DnsHostname:
+    Value: !Join [ '', [ 'https://', !GetAtt CloudFrontDistribution.DomainName ] ] 
   

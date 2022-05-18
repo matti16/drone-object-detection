@@ -4,6 +4,7 @@
 <head>
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
     <script src="js/config.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet" />
@@ -16,15 +17,33 @@
         <div class="topnav">
             <p>Drone App</p>
         </div>
+        <div class="info-box">
+            <p><b>Vehicle {{ vehicleId }}</b></p>
+            <p>Target: {{ trip.target_class }}</p>
+            <p>{{ start_time_str }} - {{ end_time_str }}</p>
+        </div>
 
-        <h3>Vehicle {{ vehicleId }} - Trip {{tripId}}</h3>
-
-        <div>
-            <div class="trip-summary">
-                {{ trip }}
+        <div class="centered-container">
+            <div v-for="(s, i) in trip.steps">
+                <div v-if="s.img_url" class="gallery">
+                    <a target="_blank" :href="s.img_url">
+                        <img :src="s.img_url" width="600" height="400">
+                    </a>
+                    <div class="desc">{{ s.dt }}</div>
+                </div>
             </div>
         </div>
+
+        <div class="centered-container">
+            <div id='velocities' class="chart"></div>
+            <div id='accelerations' class="chart"></div>
         </div>
+        
+        <div class="centered-container">
+            <div id='rotations' class="chart"></div>
+            <div id='bat_and_h' class="chart"></div>
+        </div>
+
     </div>
 </body>
 
