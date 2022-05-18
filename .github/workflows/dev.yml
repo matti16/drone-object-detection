@@ -102,7 +102,6 @@ jobs:
           role-session-name: GithubDeployDev
       - name: Choose config file
         run: |
-          rm ./web-app/static/js/config-prod.js
           mv ./web-app/static/js/config-dev.js ./web-app/static/js/config.js
       - name: Deploy
         run: |
